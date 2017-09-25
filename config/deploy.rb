@@ -1,46 +1,77 @@
-# config valid only for current version of Capistrano
-lock "3.9.1"
+set :production_application_dir, "prod"
+set :staging_application_dir, "staging"
+set :rails_env, ->{ fetch(:stage) }
 
-set :application, "worldisaparty"
-set :repo_url, "git@example.com:me/my_repo.git"
+set :default_env, {
+  "PATH" => "/home/ror/bin:/home/ror/gem/bin:$PATH",
+  "GEM_HOME" => "/home/ror/gem",
+  "BUNDLE_PATH" => "/home/ror/gem",
+  "RUBYLIB" => "/home/ror/lib"
+}
 
-# restart using `passenger-config restart-app`
-set :passenger_restart_with_touch, false
-set :passenger_in_gemfile, true
+set :bundle_binstubs, nil
+set :bundle_path, "/home/ror/gem"
 
-# Skip migration if files in db/migrate were not modified
+set :application, 'worldisaparty'
+set :repo_url, 'git@github.com:navidemad/worldisaparty.git'
+
 set :conditionally_migrate, true
 
-# Clean up old assets after each deploy
 set :keep_assets, 2
 
-# Threads puma
+set :db_type, :mysql
+
+set :system_gems, "bundler ziltoid thin"
+set :bundle_bins, %w{ rake rails }
+set :setup_tasks, %w( gems git_user log_rotate file_upload database secrets lighttpd thin )
+
 set :puma_threads, [4, 16]
 
-# Default deploy_to directory is /var/www/my_app_name
-set :deploy_to, "/var/www/worldisaparty"
+set :deploy_ssh_keys_dir, "/Users/Navid/Development/ssh_keys/"
+set :deploy_to, ->{ "/home/ror/site/#{fetch(:application_dir)}/" }
+set :deploy_user, "ror"
 
-# Default value for :format is :airbrussh.
-# set :format, :airbrussh
+set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
 
-# You can configure the Airbrussh format using :format_options.
-# These are the defaults.
-# set :format_options, command_output: true, log_file: "log/capistrano.log", color: :auto, truncate: :auto
+append :linked_files, 'config/database.yml', 'config/secrets.yml'
 
-# Default value for :pty is false
-# set :pty, true
+append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system', 'public/uploads'
 
-# Default value for :linked_files is []
-# append :linked_files, "config/database.yml", "config/secrets.yml"
+namespace :deploy do
 
-# Default value for linked_dirs is []
-# append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/system"
+  desc "Start application"
+  task :start do
+    on roles(:app), in: :sequence, wait: 3 do
+      within current_path do
+        execute :ruby, "/home/ror/ziltoid.rb start"
+      end
+    end
+  end
 
-# Default value for default_env is {}
-# set :default_env, { path: "/opt/ruby/bin:$PATH" }
+  desc "Stop application"
+  task :stop do
+    on roles(:app), in: :sequence, wait: 3 do
+      within current_path do
+        execute :ruby, "/home/ror/ziltoid.rb stop"
+      end
+    end
+  end
 
-# Default value for local_user is ENV['USER']
-# set :local_user, -> { `git config user.name`.chomp }
+  desc "Restart application"
+  task :restart do
+    on roles(:app), in: :sequence do
+      within current_path do
+        execute :ruby, "/home/ror/ziltoid.rb restart"
+      end
+    end
+  end
 
-# Default value for keep_releases is 5
-# set :keep_releases, 5
+  before :deploy, "deploy:check_revision"
+  before :deploy, "deploy:run_tests"
+  after :publishing, "deploy:setup:lighttpd"
+  after :publishing, "deploy:setup:thin"
+  after :publishing, "deploy:setup:ziltoid"
+  after :publishing, :restart
+  after :finishing, :cleanup
+
+end

@@ -9,11 +9,10 @@ require "capistrano/rbenv"
 require "capistrano/bundler"
 require "capistrano/rails/assets"
 require "capistrano/rails/migrations"
-require "capistrano/passenger"
 
 # If you are using rbenv add these lines:
 set :rbenv_type, :user
-set :rbenv_ruby, "2.4.1"
+set :rbenv_ruby, File.read('.ruby-version').strip
 
 # Load the SCM plugin appropriate to your project:
 require "capistrano/scm/git"
