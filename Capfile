@@ -10,6 +10,8 @@ require "capistrano/bundler"
 require "capistrano/rails/assets"
 require "capistrano/rails/migrations"
 
+require 'whenever/capistrano'
+
 # If you are using rbenv add these lines:
 set :rbenv_type, :user
 set :rbenv_ruby, File.read('.ruby-version').strip

@@ -1,0 +1,8 @@
+example_id                                       | status  | run_time        |
+------------------------------------------------ | ------- | --------------- |
+./spec/features/jackpots/about_page_spec.rb[1:1] | failed  | 0.01242 seconds |
+./spec/features/jackpots/home_page_spec.rb[1:1]  | failed  | 0.08541 seconds |
+./spec/models/gift_spec.rb[1:1]                  | pending | 0.00001 seconds |
+./spec/models/instant_gagnant_spec.rb[1:1]       | pending | 0.00001 seconds |
+./spec/models/machine_run_spec.rb[1:1]           | pending | 0.00002 seconds |
+./spec/models/user_spec.rb[1:1]                  | pending | 0.00001 seconds |

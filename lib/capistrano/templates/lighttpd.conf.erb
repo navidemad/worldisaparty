@@ -1,0 +1,81 @@
+# Lighttpd configuration file
+#
+# Standard setup for RoR hosting on ror.bearstech.com (with unicorn)
+
+server.modules = (
+  "mod_access",
+  "mod_accesslog",
+  "mod_proxy",
+  "mod_auth",
+  "mod_redirect"
+)
+
+$HTTP["host"] =~ "^www\.(.*)$" {
+  url.redirect = ( "^/(.*)" => "http://%1/$1" )
+}
+
+$HTTP["host"] =~ ".*" {
+  $HTTP["url"] =~ "^/((data|icon|images|stylesheets|javascripts|assets)/(.*)$|(favicon\.ico|robots\.txt|reglement\.pdf))" {
+    server.document-root = "/root/site/<%= fetch(:production_application_dir) %>/current/public"
+  }
+  else $HTTP["host"] =~ ".*" {
+    proxy.balance = "fair"
+    proxy.server =  ("" =>
+      (
+        ( "host" => "127.0.0.1", "port" => 4567),
+        ( "host" => "127.0.0.1", "port" => 4568)
+      )
+    )
+  }
+}
+
+#
+# Various useful options you may tweak
+#
+
+url.access-deny = (
+  "~",
+  ".svn",
+  ".git"
+)
+
+dir-listing.encoding = "utf-8"
+server.dir-listing   = "enable"
+
+#compress.cache-dir   = "/root/http/tmp/compress/"
+#compress.filetype    = ( "text/plain", "text/html", "text/css", "text/javascript" )
+
+#expire.url           = ( "/avatar/" => "access 2 hours" )
+
+
+#
+# Those defaults are very sane, please don't change them unless
+# you really know what you are doing. Thank you.
+#
+# IMPORTANT: don't modify log file paths, they are properly rotated via
+# /etc/logrotate.d/lighttpd. You risk filling up your disk space.
+#
+
+server.port             = 8080
+server.username         = "ror"
+server.groupname        = "ror"
+server.pid-file         = "/root/http/tmp/lighttpd.pid"
+server.document-root    = "/root/http/default"
+server.errorfile-prefix = "/root/http/default/error-"
+server.errorlog         = "/root/http/log/error.log"
+server.upload-dirs      = ("/root/uploads")
+accesslog.filename      = "/root/http/log/access.log"
+
+# Allow large file upload
+server.max-request-size = 10000000
+server.network-backend  = "writev"
+
+# 2009-16-23 lbonnet@bearstech.com
+# disable keepalive for WebKit, fixes weird upload bugs on some apps
+$HTTP["useragent"] =~ "^(.*MSIE.*)|(.*AppleWebKit.*)$" {
+  server.max-keep-alive-requests = 0
+}
+
+
+include_shell "/usr/share/lighttpd/create-mime.assign.pl"
+include_shell "/usr/share/lighttpd/include-conf-enabled.pl"

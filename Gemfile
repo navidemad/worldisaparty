@@ -1,30 +1,49 @@
 source 'https://rubygems.org'
 
-git_source(:github) do |repo_name|
-  repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
-  "https://github.com/#{repo_name}.git"
+gem 'rails'
+gem 'mysql2'
+gem 'puma'
+gem 'sass-rails'
+gem 'uglifier'
+gem 'slim-rails'
+gem 'mini_racer'
+gem 'coffee-rails'
+gem 'turbolinks'
+gem 'jbuilder'
+gem 'bcrypt'
+gem 'autoprefixer-rails'
+gem 'lograge'
+gem 'whenever', require: false
+gem 'bootsnap', require: false
+
+group :production, :staging do
+  gem 'rollbar'
 end
 
-gem 'rails', '~> 5.1.4'
-gem 'mysql2', '>= 0.3.18', '< 0.5'
-gem 'puma', '~> 3.7'
-gem 'sass-rails', '~> 5.0'
-gem 'uglifier', '>= 1.3.0'
-gem 'mini_racer'
-gem 'coffee-rails', '~> 4.2'
-gem 'turbolinks', '~> 5'
-gem 'jbuilder', '~> 2.5'
-gem 'bcrypt', '~> 3.1.7'
-
 group :development, :test do
+  gem 'dotenv-rails'
+  gem 'awesome_print'
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'factory_girl_rails'
+  gem 'factory_girl_generator'
+  gem 'faker'
+  gem 'rspec-rails'
 end
 
 group :development do
-  gem 'listen', '>= 3.0.5', '< 3.2'
+  gem 'listen'
   gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'spring-watcher-listen'
   gem 'capistrano'
   gem 'capistrano-rails'
   gem 'capistrano-rbenv'
+  gem 'better_errors'
+end
+
+group :test do
+  gem 'capybara'
+  gem 'database_cleaner'
+  gem 'shoulda-matchers'
+  gem 'shoulda-callback-matchers'
+  gem 'webmock'
 end

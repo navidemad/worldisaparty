@@ -52,5 +52,8 @@ environment ENV.fetch("RAILS_ENV") { "development" }
 # end
 #
 
+force_shutdown_after 2 if respond_to?(:force_shutdown_after)
+persistent_timeout 30
+
 # Allow puma to be restarted by `rails restart` command.
 plugin :tmp_restart
