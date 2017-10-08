@@ -1,15 +1,14 @@
 source 'https://rubygems.org'
 
-gem 'rails'
-gem 'mysql2'
-gem 'puma'
-gem 'sass-rails'
-gem 'uglifier'
+gem 'rails', '~> 5.1.4'
+gem 'mysql2', '>= 0.3.18', '< 0.5'
+gem 'puma', '~> 3.7'
+gem 'sass-rails', '~> 5.0'
+gem 'uglifier', '>= 1.3.0'
 gem 'slim-rails'
 gem 'mini_racer'
-gem 'coffee-rails'
-gem 'turbolinks'
-gem 'jbuilder'
+gem 'turbolinks', '~> 5'
+gem 'jbuilder', '~> 2.5'
 gem 'bcrypt'
 gem 'autoprefixer-rails'
 gem 'lograge'
@@ -28,12 +27,11 @@ group :development, :test do
 end
 
 group :development do
-  gem 'listen'
+  gem 'listen', '>= 3.0.5', '< 3.2'
   gem 'spring'
-  gem 'spring-watcher-listen'
+  gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'capistrano'
   gem 'capistrano-rails'
-  gem 'capistrano-rbenv'
   gem 'better_errors'
 end
 
