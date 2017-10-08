@@ -10,6 +10,7 @@ gem 'mini_racer'
 gem 'turbolinks', '~> 5'
 gem 'jbuilder', '~> 2.5'
 gem 'bcrypt'
+gem 'jquery-rails'
 gem 'autoprefixer-rails'
 gem 'lograge'
 gem 'whenever', require: false
