@@ -15,6 +15,7 @@ gem 'lograge'
 gem 'whenever', require: false
 gem 'bootsnap', require: false
 gem 'rollbar'
+gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 group :development, :test do
   gem 'dotenv-rails'
