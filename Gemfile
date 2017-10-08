@@ -15,10 +15,7 @@ gem 'autoprefixer-rails'
 gem 'lograge'
 gem 'whenever', require: false
 gem 'bootsnap', require: false
-
-group :production, :staging do
-  gem 'rollbar'
-end
+gem 'rollbar'
 
 group :development, :test do
   gem 'dotenv-rails'
